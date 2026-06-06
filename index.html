@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turing's Light — June Solstice Game Jam 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700;900&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║          SCREEN: TITLE                   ║
+     ╚══════════════════════════════════════════╝ -->
+<div id="screen-title" class="screen active">
+  <canvas id="title-canvas"></canvas>
+  <div class="title-overlay">
+    <div class="title-badge">✦ JUNE SOLSTICE GAME JAM 2026 ✦</div>
+    <div class="title-logo">
+      <div class="title-top">TURING'S</div>
+      <div class="title-main">LIGHT</div>
+      <div class="title-sub">A story of logic, love &amp; legacy</div>
+    </div>
+    <div class="title-quote">"Sometimes it is the people no one imagines anything of<br>who do the things that no one can imagine."</div>
+    <button class="btn-primary" id="start-btn">▶ &nbsp;BEGIN TRANSMISSION</button>
+    <div class="title-controls">ARROW KEYS / WASD &nbsp;·&nbsp; CLICK &nbsp;·&nbsp; ENTER</div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║          SCREEN: STORY                   ║
+     ╚══════════════════════════════════════════╝ -->
+<div id="screen-story" class="screen">
+  <canvas id="story-canvas"></canvas>
+  <div class="story-overlay">
+    <div class="story-act-badge" id="story-act-badge">ACT I</div>
+    <div class="story-headline" id="story-headline">The Boy Who Dreamed in Numbers</div>
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <span class="tdot red"></span>
+        <span class="tdot yellow"></span>
+        <span class="tdot green"></span>
+        <span class="terminal-filename">TURING_ARCHIVE.log — READ ONLY</span>
+      </div>
+      <div class="terminal-body" id="story-body"></div>
+      <div class="terminal-footer">
+        <span class="blink">█</span>
+        <span class="terminal-prompt">&nbsp;Press ENTER or click to continue_</span>
+      </div>
+    </div>
+    <button class="btn-terminal" id="story-continue-btn">[ CONTINUE → ]</button>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║          SCREEN: GAME                    ║
+     ╚══════════════════════════════════════════╝ -->
+<div id="screen-game" class="screen">
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-group">
+      <div class="hud-pill"><span class="hud-label">LVL</span><span class="hud-value" id="hud-level">1</span></div>
+      <div class="hud-pill"><span class="hud-label">ACT</span><span class="hud-value" id="hud-act">I</span></div>
+    </div>
+    <div class="hud-title" id="hud-puzzle-name">LOGIC GATES</div>
+    <div class="hud-group">
+      <div class="hud-pill light-pill">
+        <span class="hud-label">LIGHT</span>
+        <div class="light-bar-wrap"><div class="light-bar" id="light-bar"></div></div>
+        <span class="hud-value" id="hud-light">100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 1: LOGIC GATES ── -->
+  <div id="puzzle-1" class="puzzle-panel">
+    <div class="puzzle-frame">
+      <div class="puzzle-intro">
+        <span class="c-green">// Cambridge, 1930. Young Alan discovers boolean logic.</span><br>
+        <span class="c-amber">TASK:</span> Toggle the input switches so the DOOR OUTPUT equals <strong class="c-green">1</strong> (TRUE). Wire all gates correctly.
+      </div>
+      <div class="gate-section" id="gate-section"></div>
+      <div class="gate-output-row">
+        <span class="gate-out-label">DOOR OUTPUT:</span>
+        <span class="gate-out-val" id="gate-out-val">?</span>
+        <span class="gate-door-status" id="gate-door">🔒 LOCKED</span>
+      </div>
+      <div class="gate-hint c-amber" id="gate-hint"></div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 2A: CAESAR CIPHER ── -->
+  <div id="puzzle-2a" class="puzzle-panel hidden">
+    <div class="puzzle-frame">
+      <div class="puzzle-intro">
+        <span class="c-green">// Bletchley Park, 1940. Enemy radio intercept received.</span><br>
+        <span class="c-amber">TASK:</span> Find the correct shift key to decode the Caesar cipher. The clue reveals the number.
+      </div>
+      <div class="cipher-clue-box" id="cipher-clue"></div>
+      <div class="field-label">ENCODED MESSAGE:</div>
+      <div class="cipher-encoded" id="cipher-encoded"></div>
+      <div class="cipher-slider-row">
+        <span class="field-label">SHIFT KEY: <span class="c-amber" id="shift-display">0</span></span>
+        <input type="range" id="shift-slider" min="0" max="25" value="0" class="slider" />
+      </div>
+      <div class="field-label">DECODED OUTPUT:</div>
+      <div class="cipher-decoded" id="cipher-decoded">—</div>
+      <button class="btn-terminal" id="cipher-submit-btn">[ SUBMIT DECODE ]</button>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 2B: BINARY DECODE ── -->
+  <div id="puzzle-2b" class="puzzle-panel hidden">
+    <div class="puzzle-frame">
+      <div class="puzzle-intro">
+        <span class="c-green">// Bletchley Park, 1941. Binary patterns found in the signal.</span><br>
+        <span class="c-amber">TASK:</span> Convert each binary byte to a letter. Spell the hidden word.
+      </div>
+      <div class="binary-grid" id="binary-grid"></div>
+      <div class="binary-input-row">
+        <input type="text" id="binary-input" class="terminal-input" placeholder="TYPE THE DECODED WORD..." maxlength="20" />
+        <button class="btn-terminal" id="binary-submit-btn">[ CONFIRM ]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 3: LIGHT / DARK ── -->
+  <div id="puzzle-3" class="puzzle-panel hidden">
+    <div class="puzzle-frame dark-frame">
+      <div class="puzzle-intro">
+        <span class="c-green">// 1952. Secrets are buried in darkness.</span><br>
+        <span class="c-amber">TASK:</span> Click cells to illuminate them. Lit cells reveal hidden symbols. Enter the revealed sequence.
+      </div>
+      <div class="light-grid-wrap">
+        <div class="light-grid" id="light-grid"></div>
+        <div class="torch-hint">☀ CLICK TO ILLUMINATE CELLS</div>
+      </div>
+      <div class="light-revealed-row">
+        <span class="field-label">REVEALED:</span>
+        <div class="light-revealed" id="light-revealed"></div>
+      </div>
+      <div class="binary-input-row">
+        <input type="text" id="light-input" class="terminal-input" placeholder="ENTER THE SEQUENCE..." />
+        <button class="btn-terminal" id="light-submit-btn">[ UNLOCK ]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 4: ENIGMA MACHINE ── -->
+  <div id="puzzle-4" class="puzzle-panel hidden">
+    <div class="puzzle-frame enigma-frame">
+      <div class="puzzle-intro">
+        <span class="c-green">// The Enigma Machine. Rotors scramble every letter.</span><br>
+        <span class="c-amber">TASK:</span> Adjust each rotor so the machine OUTPUT matches the TARGET phrase.
+      </div>
+      <div class="enigma-body">
+        <div class="enigma-rotors" id="enigma-rotors"></div>
+        <div class="enigma-io-row">
+          <div class="enigma-io-box">
+            <div class="field-label">TARGET</div>
+            <div class="enigma-target" id="enigma-target">TURING</div>
+          </div>
+          <div class="enigma-arrow">→</div>
+          <div class="enigma-io-box">
+            <div class="field-label">OUTPUT</div>
+            <div class="enigma-output" id="enigma-output">??????</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-terminal" id="enigma-submit-btn">[ ENGAGE ENIGMA ]</button>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 5: TURING TEST ── -->
+  <div id="puzzle-5" class="puzzle-panel hidden">
+    <div class="puzzle-frame turing-frame">
+      <div class="puzzle-intro">
+        <span class="c-green">// The Final Question. Man or Machine?</span><br>
+        <span class="c-amber">TASK:</span> Read each response. Decide whether it was written by a <strong class="c-cyan">HUMAN</strong> or a <strong class="c-red">MACHINE</strong>. Score 4 or more to pass.
+      </div>
+      <div class="turing-area" id="turing-area">
+        <div class="turing-q-label">QUESTION: <span id="turing-q-text" class="c-cyan"></span></div>
+        <div class="turing-cards" id="turing-cards"></div>
+        <div class="turing-progress">
+          <span class="field-label">SCORE:</span>
+          <span class="c-green" id="turing-score">0 / 0</span>
+          &nbsp;|&nbsp;
+          <span class="field-label">REMAINING:</span>
+          <span class="c-amber" id="turing-remaining">5</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feedback-toast" id="feedback-toast"></div>
+</div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║          SCREEN: ENDING                  ║
+     ╚══════════════════════════════════════════╝ -->
+<div id="screen-ending" class="screen">
+  <canvas id="ending-canvas"></canvas>
+  <div class="ending-overlay">
+    <div class="rainbow-bar top"></div>
+    <div class="ending-content">
+      <div class="ending-year-tag">1912 &nbsp;—&nbsp; 1954 &nbsp;—&nbsp; ∞</div>
+      <h1 class="ending-title">THE LIGHT ENDURES</h1>
+      <div class="terminal-box ending-terminal">
+        <div class="terminal-header">
+          <span class="tdot red"></span>
+          <span class="tdot yellow"></span>
+          <span class="tdot green"></span>
+          <span class="terminal-filename">FINAL_TRANSMISSION.log</span>
+        </div>
+        <div class="terminal-body" id="ending-log"></div>
+      </div>
+      <p class="ending-tribute">
+        Alan Turing was chemically castrated by the British government for being gay.<br>
+        He died on 7 June 1954, aged 41. He was pardoned — posthumously — in 2013.<br><br>
+        Every computer you have ever used exists because of him.
+      </p>
+      <div class="pride-dots" id="pride-dots"></div>
+      <div class="ending-final-line">"The light of truth can be obscured, but never extinguished."</div>
+      <button class="btn-primary" id="restart-btn">↺ &nbsp;PLAY AGAIN</button>
+    </div>
+    <div class="rainbow-bar bottom"></div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║           MODAL                          ║
+     ╚══════════════════════════════════════════╝ -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-icon" id="modal-icon">✓</div>
+    <div class="modal-title" id="modal-title">CORRECT</div>
+    <div class="modal-body" id="modal-body"></div>
+    <button class="btn-terminal" id="modal-next-btn">[ CONTINUE ]</button>
+  </div>
+</div>
+
+<script src="js/story.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>
