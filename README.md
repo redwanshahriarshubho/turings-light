@@ -1,7 +1,6 @@
 # 🌟 Turing's Light
 
-**A June Solstice Game Jam 2026 Entry**  
-*A story of logic, love, and legacy*
+
 
 ---
 
@@ -109,12 +108,7 @@ Every computer you have ever used exists because of him.
 
 ---
 
-## 📅 Jam Info
 
-- **Jam:** June Solstice Game Jam 2026 on DEV Community
-- **Submission deadline:** June 21, 2026
-- **Built with:** Vanilla JS · Canvas API · Pure CSS
-- **Estimated playtime:** 10–15 minutes
 
 ---
 
