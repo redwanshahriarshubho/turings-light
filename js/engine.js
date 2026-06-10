@@ -54,6 +54,7 @@ const Engine = (() => {
 
   /* ─── STORY SCREEN ───────────────────────────────────────── */
   function showStory(idx) {
+    storyIdx = idx;   // ← always keep storyIdx in sync
     const s = STORY[idx];
     if (!s) { showEnding(); return; }
 
