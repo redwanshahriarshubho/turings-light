@@ -548,6 +548,9 @@ const Levels = (() => {
     const cards = $("turing-cards");
     cards.innerHTML = "";
 
+    // track how many cards answered THIS question
+    let answeredThisQuestion = 0;
+
     // shuffle responses
     const responses = Math.random() < 0.5
       ? [q.human, q.machine]
@@ -572,13 +575,19 @@ const Levels = (() => {
       mBtn.className = "t-btn machine";
       mBtn.textContent = "🤖 MACHINE";
 
+      let answered = false;
+
       const markAnswer = (guessedHuman) => {
+        if (answered) return;
+        answered = true;
+
         const correct = guessedHuman === resp.isHuman;
         turingTotal++;
         if (correct) turingScore++;
 
-        // disable all buttons in this card
-        cards.querySelectorAll(".t-btn").forEach(b => b.disabled = true);
+        // disable only THIS card's buttons
+        hBtn.disabled = true;
+        mBtn.disabled = true;
 
         hBtn.classList.add(resp.isHuman  ? "correct" : "wrong");
         mBtn.classList.add(!resp.isHuman ? "correct" : "wrong");
@@ -586,13 +595,14 @@ const Levels = (() => {
         toast(correct ? "✓ Correct!" : "✗ Wrong — check the language patterns.", correct);
         $("turing-score").textContent = `${turingScore} / ${turingTotal}`;
 
-        // if both cards answered, advance
-        if (turingTotal % 2 === 0) {
+        // advance only when BOTH cards in this question are answered
+        answeredThisQuestion++;
+        if (answeredThisQuestion === 2) {
           turingQIdx++;
           if (turingQIdx >= TURING_QUESTIONS.length) {
-            setTimeout(finishTuringTest, 1200);
+            setTimeout(finishTuringTest, 1400);
           } else {
-            setTimeout(renderTuringQuestion, 1400);
+            setTimeout(renderTuringQuestion, 1600);
           }
         }
       };
